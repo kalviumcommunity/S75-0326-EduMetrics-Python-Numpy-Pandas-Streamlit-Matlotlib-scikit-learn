@@ -316,4 +316,47 @@ Advanced NLP models
 
 Instructor analytics
 
+ setup-ds-environment
+Multi-university benchmarking system
+
+## ⚙️ Data Science Environment Setup
+
+### 🖥️ System Information
+- OS: Windows
+- Python Version: 3.12.10
+- Anaconda Version: 25.11.1
+
+---
+
+### 🐍 Python Verification
+Command:
+python --version
+
+Output:
+Python 3.12.10
+
+---
+
+### 📦 Conda Verification
+Command:
+conda --version
+
+Output:
+conda 25.11.1
+
+---
+
+### 🌱 Environment Setup
+conda create -n ds_env python=3.10
+conda activate ds_env
+
+---
+
+### ✅ Validation
+python -c "print('Environment Ready')"
+
+Output:
+Environment Ready
+
 Multi-college benchmarking
+ main
