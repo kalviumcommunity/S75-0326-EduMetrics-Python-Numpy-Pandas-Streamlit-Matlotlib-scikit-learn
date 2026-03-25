@@ -293,10 +293,30 @@ If you want something simpler:
 
 ---
 
-If you want next level 💯  
-👉 I can:
-- Fill your exact Python & Conda versions into README  
-- Review your PR before submission  
-- Help you make your video sound more confident  
+# Jupyter Setup
 
-Just tell me 👍
+## Objective
+
+Learn to launch and use Jupyter Notebook for basic navigation and execution.
+
+## Steps
+
+* Launched Jupyter using `jupyter notebook`
+* Explored home interface (files, folders, navigation)
+* Navigated project directories
+* Created a new notebook (Python 3)
+* Ran a test cell:
+
+  ```python
+  print("Jupyter is working")
+  ```
+* Renamed and saved the notebook
+
+## Outcome
+
+Successfully created and executed a notebook in the correct project folder.
+
+## Tools
+
+Python, Jupyter Notebook, Anaconda
+
