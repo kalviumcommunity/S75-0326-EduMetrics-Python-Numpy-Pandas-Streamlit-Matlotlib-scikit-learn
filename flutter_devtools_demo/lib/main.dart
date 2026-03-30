@@ -86,44 +86,44 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('🛠️ How to Use Flutter DevTools'),
-          content: SingleChildScrollView(
+          content: const SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const SectionTitle(title: '1. Open DevTools'),
-                const Text(
+                SectionTitle(title: '1. Open DevTools'),
+                Text(
                   '• In VS Code: Run "Flutter: Open DevTools" from Command Palette\n'
                   '• Or run: flutter pub global run devtools',
                   style: TextStyle(fontSize: 12),
                 ),
-                const SizedBox(height: 12),
-                const SectionTitle(title: '2. Widget Inspector'),
-                const Text(
+                SizedBox(height: 12),
+                SectionTitle(title: '2. Widget Inspector'),
+                Text(
                   '• Click the widget icon in DevTools\n'
                   '• Click on any UI element in your app\n'
                   '• See the widget tree and corresponding code',
                   style: TextStyle(fontSize: 12),
                 ),
-                const SizedBox(height: 12),
-                const SectionTitle(title: '3. Performance Tab'),
-                const Text(
+                SizedBox(height: 12),
+                SectionTitle(title: '3. Performance Tab'),
+                Text(
                   '• Monitor FPS (frames per second)\n'
                   '• Check for dropped frames or jank\n'
                   '• Identify performance bottlenecks',
                   style: TextStyle(fontSize: 12),
                 ),
-                const SizedBox(height: 12),
-                const SectionTitle(title: '4. Memory Tab'),
-                const Text(
+                SizedBox(height: 12),
+                SectionTitle(title: '4. Memory Tab'),
+                Text(
                   '• Track memory usage over time\n'
                   '• Detect memory leaks\n'
                   '• Monitor garbage collection',
                   style: TextStyle(fontSize: 12),
                 ),
-                const SizedBox(height: 12),
-                const SectionTitle(title: '5. Debug Console'),
-                const Text(
+                SizedBox(height: 12),
+                SectionTitle(title: '5. Debug Console'),
+                Text(
                   '• Check this app\'s debugPrint() outputs here\n'
                   '• All logs appear with timestamps\n'
                   '• Useful for tracking variable values',
@@ -354,11 +354,11 @@ class _MyHomePageState extends State<MyHomePage> {
               // 📖 HOW IT WORKS
               Card(
                 color: Colors.orange.shade50,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                child: const Padding(
+                  padding: EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         '📖 Demonstration Workflow',
                         style: TextStyle(
