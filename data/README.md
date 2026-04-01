@@ -1,0 +1,1 @@
+This directory contains the datasets used in the project. It is divided into raw and processed data.

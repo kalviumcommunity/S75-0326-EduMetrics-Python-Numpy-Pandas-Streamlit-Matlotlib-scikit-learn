@@ -1,0 +1,1 @@
+This directory contains the outputs of the project, such as models, plots, and reports.
