@@ -162,39 +162,43 @@ Add recommendations and alerts
 
 Prepare README & demo
 
-🚀 5. MVP (Minimum Viable Product)
+🚀 5. Getting Started
 
-The MVP includes:
+Follow these steps to set up and run the EduMetrics platform:
 
-CSV upload feature
+### 1. Install Dependencies
+Make sure you have Python installed, then run:
+```bash
+pip install -r requirements.txt
+```
 
-Course performance dashboard
+### 2. Run the Application
+Launch the Streamlit dashboard:
+```bash
+streamlit run app.py
+```
 
-Sentiment analysis (basic ML)
+### 3. Usage
+- **Signup/Login**: Create an account or login to access the dashboard.
+- **Upload CSV**: Go to the sidebar and upload your student feedback dataset. You can find several mixed-feedback sample batches in the `data/` folder:
+    - `feedback_batch_1.csv`
+    - `feedback_batch_2.csv`
+    - `feedback_batch_3.csv`
+    - `feedback_batch_4.csv`
+- **Analyze**: Explore the sentiment distribution, course health scores, and risk predictions.
+- **Download**: Export the processed results for academic reporting.
 
-Course Health Score
-
-At least 2–3 visualizations
-
-👉 Ensures end-to-end functionality from data → insight
-
-⚙️ 6. Functional Requirements
+📊 6. Functional Requirements
 
 The system must:
-
-Accept CSV dataset input
-
-Process and clean data
-
-Perform sentiment classification
-
-Calculate course metrics
-
-Display visual insights
-
-Predict course risk levels
-
-Provide recommendations
+- [x] Secure Login/Signup system
+- [x] Accept CSV dataset input
+- [x] Process and clean data automatically
+- [x] Perform sentiment classification (Positive/Neutral/Negative)
+- [x] Calculate Course Health Scores (0-100%)
+- [x] Display visual insights (Sentiment trends, Health vs Difficulty)
+- [x] Predict course risk levels (Low/Moderate/High)
+- [x] Provide automated academic recommendations
 
 ⚡ 7. Non-Functional Requirements
 ⏱ Performance
