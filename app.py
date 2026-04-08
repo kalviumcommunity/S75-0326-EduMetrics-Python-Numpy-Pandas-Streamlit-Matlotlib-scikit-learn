@@ -220,124 +220,134 @@ def main_dashboard():
         st.code("feedback_batch_4.csv")
     
     if uploaded_file is not None:
-        with st.status("🔍 Analyzing Student Feedback Data...", expanded=True) as status:
-            st.write("Reading CSV...")
-            df = pd.read_csv(uploaded_file)
+        try:
+            with st.status("🔍 Analyzing Student Feedback Data...", expanded=True) as status:
+                st.write("Reading CSV...")
+                df = pd.read_csv(uploaded_file)
+                
+                # Basic column validation
+                required_cols = ['course_name', 'teaching_quality', 'difficulty', 'satisfaction', 'assignment_load', 'feedback']
+                if not all(col in df.columns for col in required_cols):
+                    st.error(f"Invalid CSV format! Must contain these columns: {', '.join(required_cols)}")
+                    st.stop()
+
+                st.write("Running Sentiment Analysis...")
+                df = perform_sentiment_analysis(df)
+                
+                st.write("Calculating Course Health Scores...")
+                df = calculate_course_health(df)
+                
+                st.write("Predicting Academic Risks...")
+                df = predict_risk(df)
+                
+                status.update(label="✅ Analysis Complete!", state="complete", expanded=False)
             
-            st.write("Running Sentiment Analysis...")
-            df = perform_sentiment_analysis(df)
+            st.snow()
+            st.title("📈 Academic Insights Dashboard")
+            st.markdown(f"**Analyzing feedback from {len(df)} student responses.**")
             
-            st.write("Calculating Course Health Scores...")
-            df = calculate_course_health(df)
+            # --- KEY METRICS ---
+            st.markdown("### Key Performance Indicators")
+            m_col1, m_col2, m_col3, m_col4 = st.columns(4)
             
-            st.write("Predicting Academic Risks...")
-            df = predict_risk(df)
+            with m_col1:
+                avg_health = df['health_score'].mean()
+                st.markdown(f"""
+                    <div class="metric-card">
+                        <p style='color:#636e72; font-size:14px; margin-bottom:5px;'>Avg Health Score</p>
+                        <h2 style='color:#ff4b4b; margin:0;'>{avg_health:.1f}%</h2>
+                    </div>
+                """, unsafe_allow_html=True)
+                
+            with m_col2:
+                positive_perc = (df['sentiment'] == "Positive").mean() * 100
+                st.markdown(f"""
+                    <div class="metric-card">
+                        <p style='color:#636e72; font-size:14px; margin-bottom:5px;'>Positive Sentiment</p>
+                        <h2 style='color:#00b894; margin:0;'>{positive_perc:.1f}%</h2>
+                    </div>
+                """, unsafe_allow_html=True)
+                
+            with m_col3:
+                high_risk_count = (df['risk_level'] == "High Risk").sum()
+                st.markdown(f"""
+                    <div class="metric-card">
+                        <p style='color:#636e72; font-size:14px; margin-bottom:5px;'>High Risk Courses</p>
+                        <h2 style='color:#d63031; margin:0;'>{high_risk_count}</h2>
+                    </div>
+                """, unsafe_allow_html=True)
+                
+            with m_col4:
+                total_feedback = len(df)
+                st.markdown(f"""
+                    <div class="metric-card">
+                        <p style='color:#636e72; font-size:14px; margin-bottom:5px;'>Total Feedbacks</p>
+                        <h2 style='color:#0984e3; margin:0;'>{total_feedback}</h2>
+                    </div>
+                """, unsafe_allow_html=True)
+                
+            st.markdown("<br>", unsafe_allow_html=True)
             
-            status.update(label="✅ Analysis Complete!", state="complete", expanded=False)
-        
-        st.snow()
-        st.title("📈 Academic Insights Dashboard")
-        st.markdown(f"**Analyzing feedback from {len(df)} student responses.**")
-        
-        # --- KEY METRICS ---
-        st.markdown("### Key Performance Indicators")
-        m_col1, m_col2, m_col3, m_col4 = st.columns(4)
-        
-        with m_col1:
-            avg_health = df['health_score'].mean()
-            st.markdown(f"""
-                <div class="metric-card">
-                    <p style='color:#636e72; font-size:14px; margin-bottom:5px;'>Avg Health Score</p>
-                    <h2 style='color:#ff4b4b; margin:0;'>{avg_health:.1f}%</h2>
-                </div>
-            """, unsafe_allow_html=True)
+            # --- VISUALIZATIONS ---
+            c1, c2 = st.columns(2)
             
-        with m_col2:
-            positive_perc = (df['sentiment'] == "Positive").mean() * 100
-            st.markdown(f"""
-                <div class="metric-card">
-                    <p style='color:#636e72; font-size:14px; margin-bottom:5px;'>Positive Sentiment</p>
-                    <h2 style='color:#00b894; margin:0;'>{positive_perc:.1f}%</h2>
-                </div>
-            """, unsafe_allow_html=True)
+            with c1:
+                st.subheader("Sentiment Distribution")
+                fig, ax = plt.subplots(figsize=(8, 5))
+                # Enhanced visual styling
+                sns.set_style("whitegrid")
+                sns.countplot(data=df, x='sentiment', palette='viridis', ax=ax, order=['Positive', 'Neutral', 'Negative'])
+                ax.set_title("Distribution of Student Sentiments", fontsize=14, pad=20)
+                ax.set_xlabel("Sentiment Category", fontsize=12)
+                ax.set_ylabel("Count of Feedbacks", fontsize=12)
+                plt.tight_layout()
+                st.pyplot(fig)
+                
+            with c2:
+                st.subheader("Course Health vs Difficulty")
+                fig, ax = plt.subplots(figsize=(8, 5))
+                # Enhanced scatter plot visibility
+                sns.set_style("whitegrid")
+                scatter = sns.scatterplot(
+                    data=df, 
+                    x='difficulty', 
+                    y='health_score', 
+                    hue='risk_level', 
+                    size='satisfaction', 
+                    sizes=(100, 400), 
+                    palette={'Low Risk': '#00b894', 'Moderate Risk': '#f1c40f', 'High Risk': '#d63031'},
+                    alpha=0.8,
+                    edgecolor='black', 
+                    ax=ax
+                )
+                ax.set_title("Health Score vs. Course Difficulty", fontsize=14, pad=20)
+                ax.set_xlabel("Difficulty Level (1-5)", fontsize=12)
+                ax.set_ylabel("Health Score (%)", fontsize=12)
+                ax.legend(title="Risk Level & Satisfaction", bbox_to_anchor=(1.05, 1), loc='upper left')
+                plt.tight_layout()
+                st.pyplot(fig)
+                
+            st.markdown("---")
             
-        with m_col3:
-            high_risk_count = (df['risk_level'] == "High Risk").sum()
-            st.markdown(f"""
-                <div class="metric-card">
-                    <p style='color:#636e72; font-size:14px; margin-bottom:5px;'>High Risk Courses</p>
-                    <h2 style='color:#d63031; margin:0;'>{high_risk_count}</h2>
-                </div>
-            """, unsafe_allow_html=True)
+            # --- COURSE ANALYSIS TABLE ---
+            st.subheader("Detailed Course Performance & Recommendations")
             
-        with m_col4:
-            total_feedback = len(df)
-            st.markdown(f"""
-                <div class="metric-card">
-                    <p style='color:#636e72; font-size:14px; margin-bottom:5px;'>Total Feedbacks</p>
-                    <h2 style='color:#0984e3; margin:0;'>{total_feedback}</h2>
-                </div>
-            """, unsafe_allow_html=True)
+            display_df = df[['course_name', 'sentiment', 'health_score', 'risk_level']]
+            display_df['Recommendation'] = df.apply(get_recommendations, axis=1)
             
-        st.markdown("<br>", unsafe_allow_html=True)
-        
-        # --- VISUALIZATIONS ---
-        c1, c2 = st.columns(2)
-        
-        with c1:
-            st.subheader("Sentiment Distribution")
-            fig, ax = plt.subplots(figsize=(8, 5))
-            # Enhanced visual styling
-            sns.set_style("whitegrid")
-            sns.countplot(data=df, x='sentiment', palette='viridis', ax=ax, order=['Positive', 'Neutral', 'Negative'])
-            ax.set_title("Distribution of Student Sentiments", fontsize=14, pad=20)
-            ax.set_xlabel("Sentiment Category", fontsize=12)
-            ax.set_ylabel("Count of Feedbacks", fontsize=12)
-            plt.tight_layout()
-            st.pyplot(fig)
+            st.dataframe(display_df.style.background_gradient(subset=['health_score'], cmap='RdYlGn'))
             
-        with c2:
-            st.subheader("Course Health vs Difficulty")
-            fig, ax = plt.subplots(figsize=(8, 5))
-            # Enhanced scatter plot visibility
-            sns.set_style("whitegrid")
-            scatter = sns.scatterplot(
-                data=df, 
-                x='difficulty', 
-                y='health_score', 
-                hue='risk_level', 
-                size='satisfaction', 
-                sizes=(100, 400), 
-                palette={'Low Risk': '#00b894', 'Moderate Risk': '#f1c40f', 'High Risk': '#d63031'},
-                alpha=0.8,
-                edgecolor='black',
-                ax=ax
+            # --- DOWNLOAD PROCESSED DATA ---
+            csv = df.to_csv(index=False).encode('utf-8')
+            st.download_button(
+                label="Download Processed Analysis CSV",
+                data=csv,
+                file_name='edumetrics_analysis.csv',
+                mime='text/csv',
             )
-            ax.set_title("Health Score vs. Course Difficulty", fontsize=14, pad=20)
-            ax.set_xlabel("Difficulty Level (1-5)", fontsize=12)
-            ax.set_ylabel("Health Score (%)", fontsize=12)
-            ax.legend(title="Risk Level & Satisfaction", bbox_to_anchor=(1.05, 1), loc='upper left')
-            plt.tight_layout()
-            st.pyplot(fig)
-            
-        st.markdown("---")
-        
-        # --- COURSE ANALYSIS TABLE ---
-        st.subheader("Detailed Course Performance & Recommendations")
-        
-        display_df = df[['course_name', 'sentiment', 'health_score', 'risk_level']]
-        display_df['Recommendation'] = df.apply(get_recommendations, axis=1)
-        
-        st.dataframe(display_df.style.background_gradient(subset=['health_score'], cmap='RdYlGn'))
-        
-        # --- DOWNLOAD PROCESSED DATA ---
-        csv = df.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="Download Processed Analysis CSV",
-            data=csv,
-            file_name='edumetrics_analysis.csv',
-            mime='text/csv',
-        )
+        except Exception as e:
+            st.error(f"Error processing CSV: {str(e)}")
+            st.info("Please ensure the CSV file is properly formatted and contains no stray commas in text fields.")
         
     else:
         st.info("👋 Please upload a CSV file to begin the analysis.")
